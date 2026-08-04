@@ -1,0 +1,20 @@
+<svg width="2000" height="800" viewBox="0 0 2000 800" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .texto {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      font-size: 300px;
+      fill: #D00000; /* vermelho */
+      stroke: #000000; /* borda preta */
+      stroke-width: 15; /* borda fina */
+      paint-order: stroke fill;
+    }
+  </style>
+
+  <!-- Fundo transparente por padrão -->
+  <rect width="100%" height="100%" fill="none"></rect>
+
+  <text x="50%" y="55%" text-anchor="middle" dominant-baseline="middle" class="texto">
+    SIGA SESI
+  </text>
+</svg>
