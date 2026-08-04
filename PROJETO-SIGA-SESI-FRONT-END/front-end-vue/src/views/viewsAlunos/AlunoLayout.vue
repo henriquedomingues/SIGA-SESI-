@@ -14,12 +14,12 @@ const props = withDefaults(defineProps<{
   title?: string
   eyebrow?: string
   description?: string
-  active?: 'notifications' | 'central'
+  active?: 'home' | 'notifications'
 }>(), {
-  title: 'Portal do Professor',
-  eyebrow: 'AREA DO PROFESSOR',
+  title: 'Portal do Aluno',
+  eyebrow: 'AREA DO ALUNO',
   description: '',
-  active: 'central',
+  active: 'notifications',
 })
 
 const router = useRouter()
@@ -30,8 +30,8 @@ const mobileDrawer = ref(false)
 const { currentUser, userInitials, fetchUser } = useAuthenticatedUser()
 
 const navItems: NavItem[] = [
-  { title: 'Notificações', value: 'notifications', icon: 'mdi-bell-outline', to: '/professor' },
-  { title: 'Central de Controle', value: 'central', icon: 'mdi-view-dashboard-outline', to: '/centraldecomando' },
+  { title: 'Inicio', value: 'home', icon: 'mdi-view-dashboard-outline', to: '/aluno' },
+  { title: 'Notificacoes', value: 'notifications', icon: 'mdi-bell-outline', to: '/aluno' },
 ]
 
 function toggleTheme() {
@@ -109,6 +109,7 @@ onMounted(fetchUser)
           class="mr-1"
           @click="toggleTheme"
         />
+        <slot name="app-bar-actions" />
       </template>
     </v-app-bar>
 
@@ -122,7 +123,7 @@ onMounted(fetchUser)
           <div class="sesi-logo-badge">SESI</div>
         </template>
         <template #title>
-          <span class="sidebar-app-title">Portal do Professor</span>
+          <span class="sidebar-app-title">Portal do Aluno</span>
         </template>
       </v-list-item>
       <v-divider />
@@ -153,7 +154,7 @@ onMounted(fetchUser)
     </v-navigation-drawer>
 
     <v-main>
-      <v-container fluid class="professor-page pa-4 pa-md-6">
+      <v-container fluid class="student-page pa-4 pa-md-6">
         <section class="hero compact-hero">
           <div>
             <p class="eyebrow">{{ props.eyebrow }}</p>
@@ -169,9 +170,9 @@ onMounted(fetchUser)
   </v-app>
 </template>
 
-<style>
+<style scoped>
 .sesi-logo-badge {
-  background: #C41E2A;
+  background: #c41e2a;
   color: #fff;
   font-weight: 800;
   font-size: 16px;
@@ -190,7 +191,7 @@ onMounted(fetchUser)
 .sidebar-light { background: #fff !important; }
 .sidebar-dark { background: #1c1c1e !important; }
 
-.professor-page {
+.student-page {
   min-height: 100%;
   background: #f5f3f0;
 }
@@ -210,8 +211,7 @@ onMounted(fetchUser)
   border: 1px solid #e4dfda;
 }
 
-.eyebrow,
-.recent-heading span {
+.eyebrow {
   margin: 0 0 6px;
   color: #c7192d;
   font-size: 11px;
@@ -236,133 +236,6 @@ onMounted(fetchUser)
   line-height: 1.45;
 }
 
-.hero-stat {
-  min-width: 142px;
-  padding: 16px 18px;
-  color: white;
-  background: #222222;
-}
-
-.hero-stat strong,
-.hero-stat span {
-  display: block;
-}
-
-.hero-stat strong {
-  margin-top: 8px;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 32px;
-  line-height: 1;
-}
-
-.hero-stat span {
-  margin-top: 5px;
-  color: #c9c5c1;
-  font-size: 12px;
-}
-
-.workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1.9fr) minmax(280px, 0.7fr);
-  gap: 18px;
-  align-items: start;
-  max-width: 1440px;
-  margin: 0 auto;
-}
-
-.panel,
-.preview-card,
-.recent-card {
-  background: white;
-  border: 1px solid #e4dfda;
-  box-shadow: 0 18px 50px rgba(42, 31, 28, 0.04);
-}
-
-.panel {
-  padding: 18px;
-}
-
-.section-heading {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.section-heading > span {
-  width: 30px;
-  height: 30px;
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  color: #c7192d;
-  border: 1px solid #c7192d;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.section-heading h2,
-.recent-heading h2 {
-  margin: 0;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 20px;
-  font-weight: 500;
-}
-
-.section-heading p {
-  margin: 2px 0 0;
-  color: #77716c;
-  font-size: 12px;
-}
-
-.field-grid {
-  display: grid;
-  gap: 10px;
-}
-
-.two-columns {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.side-column {
-  display: grid;
-  gap: 12px;
-  position: sticky;
-  top: 16px;
-}
-
-.preview-card,
-.recent-card {
-  padding: 18px;
-}
-
-.preview-label,
-.recent-heading,
-.history-topline {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.preview-label > span,
-.history-topline > span {
-  color: #8a837d;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.14em;
-}
-
-@media (max-width: 1024px) {
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .side-column {
-    position: static;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 959px) {
   .v-navigation-drawer--permanent {
     display: none !important;
@@ -373,15 +246,6 @@ onMounted(fetchUser)
   .hero {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .hero-stat {
-    min-width: 0;
-  }
-
-  .two-columns,
-  .side-column {
-    grid-template-columns: 1fr;
   }
 }
 </style>
