@@ -1,0 +1,20 @@
+from fastapi import FastAPI
+from app.routes import auth, escolas
+from fastapi.middleware.cors import CORSMiddleware
+from app.routes import notificacoes 
+
+
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth.router, prefix="/auth")
+app.include_router(escolas.router, prefix="/escolas")
+app.include_router(notificacoes.router, prefix="/api")
