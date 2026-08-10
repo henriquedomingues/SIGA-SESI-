@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.routes import auth, escolas
 from fastapi.middleware.cors import CORSMiddleware
-from app.routes import notificacoes 
+
+from app.api.routes import auth, escolas, notificacoes
 
 
 

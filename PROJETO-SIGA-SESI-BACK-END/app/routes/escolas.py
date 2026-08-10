@@ -1,9 +1,4 @@
-from fastapi import APIRouter
+from app.api.routes.escolas import router
 
-router = APIRouter()
 
-@router.get("/")
-def listar_escolas():
-    return [
-        {"id": 1, "nome": "ESCOLA SESI BARRETOS"}
-    ]
+__all__ = ["router"]

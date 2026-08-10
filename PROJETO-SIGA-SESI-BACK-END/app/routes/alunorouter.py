@@ -1,8 +1,4 @@
-from fastapi import APIRouter, Depends
-from app.dependencies.authroutes import get_current_user  # 👈 IMPORTANTE
+from app.api.routes.aluno import router
 
-router = APIRouter()
 
-@router.get("/aluno")
-def aluno(user=Depends(get_current_user)):
-    return {"msg": "acesso permitido", "user": user}
+__all__ = ["router"]

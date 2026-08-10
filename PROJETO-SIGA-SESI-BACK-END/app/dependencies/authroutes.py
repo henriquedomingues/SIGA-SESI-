@@ -1,18 +1,6 @@
+from app.core.dependencies import get_current_user, role_required
 
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.config.security import verify_token
 
-security = HTTPBearer()
+get_current_aluno = role_required("ALUNO")
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    token = credentials.credentials
-    payload = verify_token(token)
-
-    if not payload:
-        raise HTTPException(status_code=401, detail="Token inválido")
-
-    if payload.get("tipoUser") != "ALUNO":
-        raise HTTPException(status_code=403, detail="Acesso negado")
-
-    return payload
+__all__ = ["get_current_user", "get_current_aluno"]

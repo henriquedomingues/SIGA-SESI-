@@ -1,15 +1,4 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from app.config.security import verify_token
+from app.core.dependencies import get_current_user, get_current_user_id
 
-security = HTTPBearer()
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    token = credentials.credentials
-
-    payload = verify_token(token)
-
-    if not payload:
-        raise HTTPException(status_code=401, detail="Token inválido")
-
-    return payload
+__all__ = ["get_current_user", "get_current_user_id"]
