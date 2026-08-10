@@ -11,6 +11,12 @@ type NavItem = {
   to: string
 }
 
+type ProfileMenuItem = {
+  title: string
+  icon: string
+  action: () => void
+}
+
 const props = withDefaults(defineProps<{
   title?: string
   eyebrow?: string
@@ -32,12 +38,22 @@ const { currentUser, userInitials, fetchUser } = useAuthenticatedUser()
 
 const navItems: NavItem[] = [
   { title: 'Inicio', value: 'home', icon: 'mdi-view-dashboard-outline', to: '/aluno' },
-  { title: 'Notificacoes', value: 'notifications', icon: 'mdi-bell-outline', to: '/aluno' },
+  { title: 'Notificacoes', value: 'notifications', icon: 'mdi-bell-outline', to: '/aluno/notificacoes' },
+]
+
+const profileMenuItems: ProfileMenuItem[] = [
+  { title: 'Sair da conta', icon: 'mdi-logout', action: logout },
 ]
 
 function navigate(item: NavItem) {
   mobileDrawer.value = false
   router.push(item.to)
+}
+
+function logout() {
+  localStorage.removeItem('token')
+  localStorage.removeItem('tipoUser')
+  router.replace('/')
 }
 
 onMounted(fetchUser)
@@ -76,21 +92,41 @@ onMounted(fetchUser)
 
       <template #append>
         <v-divider />
-        <v-list-item :title="currentUser.name" :subtitle="currentUser.turma" nav class="py-3">
-          <template #prepend>
-            <v-avatar color="error" size="34">
-              <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
-            </v-avatar>
+        <v-menu location="top end" transition="scale-transition">
+          <template #activator="{ props: menuProps }">
+            <v-list-item
+              v-bind="menuProps"
+              :title="rail ? undefined : currentUser.name"
+              :subtitle="rail ? undefined : currentUser.turma"
+              nav
+              class="profile-trigger py-3"
+            >
+              <template #prepend>
+                <v-avatar color="error" size="34">
+                  <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
+                </v-avatar>
+              </template>
+            </v-list-item>
           </template>
-          <template #append>
-            <v-btn
-              :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
-              variant="text"
-              size="small"
-              @click="rail = !rail"
+
+          <v-list class="profile-menu" density="compact" min-width="210">
+            <v-list-item class="profile-menu-header" :title="currentUser.name" :subtitle="currentUser.turma">
+              <template #prepend>
+                <v-avatar color="error" size="30">
+                  <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
+                </v-avatar>
+              </template>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              v-for="item in profileMenuItems"
+              :key="item.title"
+              :prepend-icon="item.icon"
+              :title="item.title"
+              @click="item.action"
             />
-          </template>
-        </v-list-item>
+          </v-list>
+        </v-menu>
       </template>
     </v-navigation-drawer>
 
@@ -140,13 +176,33 @@ onMounted(fetchUser)
       </v-list>
       <template #append>
         <v-divider />
-        <v-list-item :title="currentUser.name" :subtitle="currentUser.turma" nav class="py-3">
-          <template #prepend>
-            <v-avatar color="error" size="34">
-              <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
-            </v-avatar>
+        <v-menu location="top end" transition="scale-transition">
+          <template #activator="{ props: menuProps }">
+            <v-list-item
+              v-bind="menuProps"
+              :title="currentUser.name"
+              :subtitle="currentUser.turma"
+              nav
+              class="profile-trigger py-3"
+            >
+              <template #prepend>
+                <v-avatar color="error" size="34">
+                  <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
+                </v-avatar>
+              </template>
+            </v-list-item>
           </template>
-        </v-list-item>
+
+          <v-list class="profile-menu" density="compact" min-width="210">
+            <v-list-item
+              v-for="item in profileMenuItems"
+              :key="item.title"
+              :prepend-icon="item.icon"
+              :title="item.title"
+              @click="item.action"
+            />
+          </v-list>
+        </v-menu>
       </template>
     </v-navigation-drawer>
 
