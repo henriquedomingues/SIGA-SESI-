@@ -230,7 +230,7 @@ onMounted(loadPageData)
 
 <template>
   <ProfessorDesign
-    title="Nova notificacao"
+    title="Criar notificação"
     eyebrow="GESTAO DE NOTIFICACOES"
     description="Monte avisos e atividades com destinatarios, prazos e anexos."
     active="notifications"
@@ -888,6 +888,46 @@ onMounted(loadPageData)
   min-height: 34px;
 }
 
+:global(.theme-dark) .loading-card,
+:global(.theme-dark) .panel,
+:global(.theme-dark) .preview-card,
+:global(.theme-dark) .recent-card {
+  background: #1d1d20;
+  border-color: #333336;
+  box-shadow: none;
+}
+
+:global(.theme-dark) .section-heading h2,
+:global(.theme-dark) .preview-card h3,
+:global(.theme-dark) .history-item h3 {
+  color: #f5f2ef;
+}
+
+:global(.theme-dark) .section-heading p,
+:global(.theme-dark) .preview-card > p,
+:global(.theme-dark) .preview-meta,
+:global(.theme-dark) .history-item p,
+:global(.theme-dark) .history-item time,
+:global(.theme-dark) .empty-history,
+:global(.theme-dark) .preview-label > span,
+:global(.theme-dark) .history-topline > span {
+  color: #bbb5b1;
+}
+
+:global(.theme-dark) .selection-summary {
+  background: #252528;
+  color: #d2cfcc;
+}
+
+:global(.theme-dark) .selection-summary strong {
+  color: #f5f2ef;
+}
+
+:global(.theme-dark) .preview-meta,
+:global(.theme-dark) .history-item {
+  border-color: #333336;
+}
+
 @media (max-width: 1024px) {
   .workspace {
     grid-template-columns: 1fr;
@@ -924,4 +964,3 @@ onMounted(loadPageData)
   }
 }
 </style>
-

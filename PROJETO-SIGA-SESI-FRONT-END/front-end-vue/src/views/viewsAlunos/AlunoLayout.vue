@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAppTheme } from '@/composables/useAppTheme'
 import { useAuthenticatedUser } from '@/composables/useAuthenticatedUser'
 
 type NavItem = {
@@ -23,20 +24,16 @@ const props = withDefaults(defineProps<{
 })
 
 const router = useRouter()
-const theme = ref('light')
 const drawer = ref(true)
 const rail = ref(false)
 const mobileDrawer = ref(false)
+const { theme, isDark, toggleTheme } = useAppTheme()
 const { currentUser, userInitials, fetchUser } = useAuthenticatedUser()
 
 const navItems: NavItem[] = [
   { title: 'Inicio', value: 'home', icon: 'mdi-view-dashboard-outline', to: '/aluno' },
   { title: 'Notificacoes', value: 'notifications', icon: 'mdi-bell-outline', to: '/aluno' },
 ]
-
-function toggleTheme() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
-}
 
 function navigate(item: NavItem) {
   mobileDrawer.value = false
@@ -47,12 +44,12 @@ onMounted(fetchUser)
 </script>
 
 <template>
-  <v-app :theme="theme">
+  <v-app :theme="theme" :class="['student-shell', { 'theme-dark': isDark }]">
     <v-navigation-drawer
       v-model="drawer"
       :rail="rail"
       permanent
-      :class="['sidebar-drawer', theme === 'dark' ? 'sidebar-dark' : 'sidebar-light']"
+      :class="['sidebar-drawer', isDark ? 'sidebar-dark' : 'sidebar-light']"
     >
       <v-list-item nav class="py-4 px-3">
         <template #prepend>
@@ -97,14 +94,14 @@ onMounted(fetchUser)
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar flat :border="'b'" :class="theme === 'dark' ? 'bg-surface' : 'bg-white'">
+    <v-app-bar flat :border="'b'" :class="isDark ? 'bg-surface' : 'bg-white'">
       <v-app-bar-nav-icon class="d-flex d-md-none" @click="mobileDrawer = true" />
       <v-app-bar-title>
         <span class="text-h6 font-weight-bold">{{ props.title }}</span>
       </v-app-bar-title>
       <template #append>
         <v-btn
-          :icon="theme === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+          :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'"
           variant="text"
           class="mr-1"
           @click="toggleTheme"
@@ -116,7 +113,7 @@ onMounted(fetchUser)
     <v-navigation-drawer
       v-model="mobileDrawer"
       temporary
-      :class="theme === 'dark' ? 'sidebar-dark' : 'sidebar-light'"
+      :class="isDark ? 'sidebar-dark' : 'sidebar-light'"
     >
       <v-list-item class="py-4 px-3">
         <template #prepend>
@@ -209,6 +206,24 @@ onMounted(fetchUser)
   padding: 18px 22px;
   background: #fff;
   border: 1px solid #e4dfda;
+}
+
+:global(.theme-dark) .student-page {
+  background: #121214;
+  color: #f0eeee;
+}
+
+:global(.theme-dark) .compact-hero {
+  background: #1d1d20;
+  border-color: #333336;
+}
+
+:global(.theme-dark) .hero h1 {
+  color: #f5f2ef;
+}
+
+:global(.theme-dark) .hero p:not(.eyebrow) {
+  color: #aaa4a0;
 }
 
 .eyebrow {

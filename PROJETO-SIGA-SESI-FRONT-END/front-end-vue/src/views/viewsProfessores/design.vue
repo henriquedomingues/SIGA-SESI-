@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useAppTheme } from '@/composables/useAppTheme'
 import { useAuthenticatedUser } from '@/composables/useAuthenticatedUser'
 
 type NavItem = {
@@ -8,6 +9,12 @@ type NavItem = {
   value: string
   icon: string
   to: string
+}
+
+type ProfileMenuItem = {
+  title: string
+  icon: string
+  action: () => void
 }
 
 const props = withDefaults(defineProps<{
@@ -23,10 +30,10 @@ const props = withDefaults(defineProps<{
 })
 
 const router = useRouter()
-const theme = ref('light')
 const drawer = ref(true)
 const rail = ref(false)
 const mobileDrawer = ref(false)
+const { theme, isDark, toggleTheme } = useAppTheme()
 const { currentUser, userInitials, fetchUser } = useAuthenticatedUser()
 
 const navItems: NavItem[] = [
@@ -34,25 +41,31 @@ const navItems: NavItem[] = [
   { title: 'Central de Controle', value: 'central', icon: 'mdi-view-dashboard-outline', to: '/centraldecomando' },
 ]
 
-function toggleTheme() {
-  theme.value = theme.value === 'light' ? 'dark' : 'light'
-}
+const profileMenuItems: ProfileMenuItem[] = [
+  { title: 'Sair da conta', icon: 'mdi-logout', action: logout },
+]
 
 function navigate(item: NavItem) {
   mobileDrawer.value = false
   router.push(item.to)
 }
 
+function logout() {
+  localStorage.removeItem('token')
+  localStorage.removeItem('tipoUser')
+  router.replace('/')
+}
+
 onMounted(fetchUser)
 </script>
 
 <template>
-  <v-app :theme="theme">
+  <v-app :theme="theme" :class="['professor-shell', { 'theme-dark': isDark }]">
     <v-navigation-drawer
       v-model="drawer"
       :rail="rail"
       permanent
-      :class="['sidebar-drawer', theme === 'dark' ? 'sidebar-dark' : 'sidebar-light']"
+      :class="['sidebar-drawer', isDark ? 'sidebar-dark' : 'sidebar-light']"
     >
       <v-list-item nav class="py-4 px-3">
         <template #prepend>
@@ -79,32 +92,52 @@ onMounted(fetchUser)
 
       <template #append>
         <v-divider />
-        <v-list-item :title="currentUser.name" :subtitle="currentUser.turma" nav class="py-3">
-          <template #prepend>
-            <v-avatar color="error" size="34">
-              <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
-            </v-avatar>
+        <v-menu location="top end" transition="scale-transition">
+          <template #activator="{ props: menuProps }">
+            <v-list-item
+              v-bind="menuProps"
+              :title="rail ? undefined : currentUser.name"
+              :subtitle="rail ? undefined : currentUser.turma"
+              nav
+              class="profile-trigger py-3"
+            >
+              <template #prepend>
+                <v-avatar color="error" size="34">
+                  <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
+                </v-avatar>
+              </template>
+            </v-list-item>
           </template>
-          <template #append>
-            <v-btn
-              :icon="rail ? 'mdi-chevron-right' : 'mdi-chevron-left'"
-              variant="text"
-              size="small"
-              @click="rail = !rail"
+
+          <v-list class="profile-menu" density="compact" min-width="210">
+            <v-list-item class="profile-menu-header" :title="currentUser.name" :subtitle="currentUser.turma">
+              <template #prepend>
+                <v-avatar color="error" size="30">
+                  <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
+                </v-avatar>
+              </template>
+            </v-list-item>
+            <v-divider />
+            <v-list-item
+              v-for="item in profileMenuItems"
+              :key="item.title"
+              :prepend-icon="item.icon"
+              :title="item.title"
+              @click="item.action"
             />
-          </template>
-        </v-list-item>
+          </v-list>
+        </v-menu>
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar flat :border="'b'" :class="theme === 'dark' ? 'bg-surface' : 'bg-white'">
+    <v-app-bar flat :border="'b'" :class="isDark ? 'bg-surface' : 'bg-white'">
       <v-app-bar-nav-icon class="d-flex d-md-none" @click="mobileDrawer = true" />
       <v-app-bar-title>
         <span class="text-h6 font-weight-bold">{{ props.title }}</span>
       </v-app-bar-title>
       <template #append>
         <v-btn
-          :icon="theme === 'dark' ? 'mdi-weather-sunny' : 'mdi-weather-night'"
+          :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'"
           variant="text"
           class="mr-1"
           @click="toggleTheme"
@@ -115,7 +148,7 @@ onMounted(fetchUser)
     <v-navigation-drawer
       v-model="mobileDrawer"
       temporary
-      :class="theme === 'dark' ? 'sidebar-dark' : 'sidebar-light'"
+      :class="isDark ? 'sidebar-dark' : 'sidebar-light'"
     >
       <v-list-item class="py-4 px-3">
         <template #prepend>
@@ -142,13 +175,33 @@ onMounted(fetchUser)
       </v-list>
       <template #append>
         <v-divider />
-        <v-list-item :title="currentUser.name" :subtitle="currentUser.turma" nav class="py-3">
-          <template #prepend>
-            <v-avatar color="error" size="34">
-              <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
-            </v-avatar>
+        <v-menu location="top end" transition="scale-transition">
+          <template #activator="{ props: menuProps }">
+            <v-list-item
+              v-bind="menuProps"
+              :title="currentUser.name"
+              :subtitle="currentUser.turma"
+              nav
+              class="profile-trigger py-3"
+            >
+              <template #prepend>
+                <v-avatar color="error" size="34">
+                  <span class="text-caption font-weight-bold text-white">{{ userInitials }}</span>
+                </v-avatar>
+              </template>
+            </v-list-item>
           </template>
-        </v-list-item>
+
+          <v-list class="profile-menu" density="compact" min-width="210">
+            <v-list-item
+              v-for="item in profileMenuItems"
+              :key="item.title"
+              :prepend-icon="item.icon"
+              :title="item.title"
+              @click="item.action"
+            />
+          </v-list>
+        </v-menu>
       </template>
     </v-navigation-drawer>
 
@@ -189,6 +242,23 @@ onMounted(fetchUser)
 
 .sidebar-light { background: #fff !important; }
 .sidebar-dark { background: #1c1c1e !important; }
+
+.profile-trigger {
+  cursor: pointer;
+}
+
+.profile-trigger :deep(.v-list-item-title) {
+  font-weight: 600;
+}
+
+.profile-menu {
+  border: 1px solid rgba(127, 127, 127, 0.22);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.18);
+}
+
+.profile-menu-header {
+  pointer-events: none;
+}
 
 .professor-page {
   min-height: 100%;
@@ -350,6 +420,75 @@ onMounted(fetchUser)
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.14em;
+}
+
+.theme-dark .professor-page {
+  background: #121214;
+  color: #f0eeee;
+}
+
+.theme-dark .compact-hero,
+.theme-dark .panel,
+.theme-dark .preview-card,
+.theme-dark .recent-card,
+.theme-dark .profile-menu {
+  background: #1d1d20;
+  border-color: #333336;
+  box-shadow: none;
+}
+
+.theme-dark .hero h1,
+.theme-dark .section-heading h2,
+.theme-dark .recent-heading h2,
+.theme-dark .preview-card h3,
+.theme-dark .history-item h3 {
+  color: #f5f2ef;
+}
+
+.theme-dark .hero p:not(.eyebrow),
+.theme-dark .section-heading p,
+.theme-dark .preview-label > span,
+.theme-dark .history-topline > span {
+  color: #aaa4a0;
+}
+
+.theme-dark .selection-summary,
+.theme-dark .command-card,
+.theme-dark .loading-card {
+  background: #252528;
+  color: #d2cfcc;
+}
+
+.theme-dark .selection-summary strong {
+  color: #f5f2ef;
+}
+
+.theme-dark .preview-card > p,
+.theme-dark .preview-meta,
+.theme-dark .history-item p,
+.theme-dark .history-item time,
+.theme-dark .support-text,
+.theme-dark .command-card span {
+  color: #bbb5b1;
+}
+
+.theme-dark .preview-meta,
+.theme-dark .history-item {
+  border-color: #333336;
+}
+
+.theme-dark .v-field,
+.theme-dark .v-list,
+.theme-dark .v-overlay__content > .v-card,
+.theme-dark .v-overlay__content > .v-list {
+  background-color: #1f1f22;
+  color: #f5f2ef;
+}
+
+.theme-dark .v-field__outline,
+.theme-dark .v-divider {
+  color: #3a3a3d;
+  border-color: #3a3a3d;
 }
 
 @media (max-width: 1024px) {
