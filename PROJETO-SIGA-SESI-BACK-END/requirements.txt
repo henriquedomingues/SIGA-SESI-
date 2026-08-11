@@ -41,6 +41,7 @@ rsa==4.9.1
 sentry-sdk==2.57.0
 shellingham==1.5.4
 six==1.17.0
+sqladmin[auth]==0.31.0
 SQLAlchemy==2.0.48
 starlette==1.0.0
 typer==0.24.1

@@ -27,6 +27,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../views/viewsProfessores/CentralDeComando.vue'),
     meta: { requiresAuth: true, role: 'PROFESSOR' }
   }
+
 ]
 
 const router = createRouter({

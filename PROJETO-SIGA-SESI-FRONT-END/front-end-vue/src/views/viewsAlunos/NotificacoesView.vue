@@ -237,7 +237,7 @@ onMounted(fetchNotifications)
 
 <template>
   <AlunoLayout
-    title="Notificacoes"
+    title="Notificações"
     eyebrow="AREA DO ALUNO"
     description="Acompanhe avisos, atividades, prazos e anexos enviados pelos professores."
     active="notifications"
@@ -375,7 +375,7 @@ onMounted(fetchNotifications)
 
     <div v-if="paginatedNotifications.length === 0" class="empty-state">
       <v-icon icon="mdi-bell-off-outline" size="64" color="medium-emphasis" class="mb-4" />
-      <p class="text-h6 font-weight-medium text-medium-emphasis">Nenhuma notificacao encontrada</p>
+      <p class="text-h6 font-weight-medium text-medium-emphasis">Nenhuma notificação encontrada</p>
       <p class="text-body-2 text-disabled mt-1">Tente ajustar os filtros aplicados</p>
       <v-btn variant="tonal" color="error" class="mt-4 text-none" rounded="lg" @click="clearFilters">
         Limpar filtros

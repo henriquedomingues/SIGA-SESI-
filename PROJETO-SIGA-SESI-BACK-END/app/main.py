@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.admin_panel import setup_admin_panel
 from app.api.routes import auth, escolas, notificacoes
 
 
@@ -18,3 +19,5 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/auth")
 app.include_router(escolas.router, prefix="/escolas")
 app.include_router(notificacoes.router, prefix="/api")
+
+setup_admin_panel(app)
