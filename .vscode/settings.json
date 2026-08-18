@@ -1,0 +1,6 @@
+{
+  "python.defaultInterpreterPath": "${workspaceFolder}/PROJETO-SIGA-SESI-BACK-END/venv/bin/python",
+  "editor.formatOnSave": true,
+  "[python]": { "editor.defaultFormatter": "ms-python.black-formatter" },
+  "[vue]": { "editor.defaultFormatter": "Vue.volar" }
+}

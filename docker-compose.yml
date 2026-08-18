@@ -9,7 +9,7 @@ services:
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -20,11 +20,11 @@ services:
       retries: 10
 
   backend:
-    build: ./backend
+    build: ./PROJETO-SIGA-SESI-BACK-END
     container_name: siga_backend
     restart: unless-stopped
     volumes:
-      - ./backend:/app
+      - ./PROJETO-SIGA-SESI-BACK-END:/app
     ports:
       - "8000:8000"
     depends_on:
@@ -34,11 +34,11 @@ services:
       DATABASE_URL: mysql+pymysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}
 
   frontend:
-    build: ./frontend
+    build: ./PROJETO-SIGA-SESI-FRONT-END/front-end-vue
     container_name: siga_frontend
     restart: unless-stopped
     volumes:
-      - ./frontend:/app
+      - ./PROJETO-SIGA-SESI-FRONT-END/front-end-vue:/app
       - /app/node_modules
     ports:
       - "5173:5173"

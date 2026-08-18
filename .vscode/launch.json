@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "FastAPI: Debug",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": ["main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"],
+      "cwd": "${workspaceFolder}/PROJETO-SIGA-SESI-BACK-END",
+      "jinja": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Vue: Chrome",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/PROJETO-SIGA-SESI-FRONT-END/front-end-vue/src",
+      "preLaunchTask": "frontend: run"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack (Backend + Frontend)",
+      "configurations": ["FastAPI: Debug", "Vue: Chrome"]
+    }
+  ]
+}
